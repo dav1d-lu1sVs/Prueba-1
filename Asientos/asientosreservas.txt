@@ -1,0 +1,1 @@
+Asiento: A1 | Apellido: Vasquez | Nombre: Luis | Cédula: 100021202

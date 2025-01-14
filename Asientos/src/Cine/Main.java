@@ -17,10 +17,10 @@ public class Main {
         String formato = "2D";
         String dia="0";
         // Crear una instancia de Peliculas
-        Peliculas pelicula = new Peliculas(nombre,formato,genero,duracion,dia);
+        Peliculas pelicula = new Peliculas(nombre,formato,genero,duracion);
 
         // Crear una instancia de Sala1 asociada a la película
-        Sala1 sala = new Sala1(pelicula);
+        Sala sala = new Sala(pelicula);
 
         // Interacción con el usuario
         int opcion;
@@ -37,7 +37,7 @@ public class Main {
                     sala.mostrarEstadoAsientos();
                     break;
                 case 2:
-                    sala.registrarAsientoOcupado();
+                    System.out.println("  ");
                     break;
                 case 3:
                     System.out.println("¡Gracias por usar el sistema!");

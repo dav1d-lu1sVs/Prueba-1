@@ -2,7 +2,6 @@ package Cine;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -17,6 +16,8 @@ public class Sala {
     private FechaEstreno fechaestreno;
     private int libres;
     private int ocupados;
+    char[] letras = {'A', 'B', 'C', 'D'};
+    String[] numeros = {"1", "2", "3", "4"};
 
     public Sala(Peliculas pelicula) {
         this.asientos = new String[FILAS][COLUMNAS];
@@ -27,51 +28,56 @@ public class Sala {
         this.fechaestreno = fechaestreno;
 
         for (int fila = 0; fila < FILAS; fila++) {
-            char letra = (char) ('A' + fila);
+            char letra = letras[fila];
             for (int columna = 0; columna < COLUMNAS; columna++) {
-                asientos[fila][columna] = letra + String.valueOf(columna + 1);
+                asientos[fila][columna] = letras[fila] + numeros[columna];
             }
         }
 
-        cargarAsientosDesdeArchivo();
+        if (fechaestreno.viernesfinal()) {
+            liberarAsientos();
+            System.out.println(" ");
+            System.out.println("Funcion Nueva");
+        } else {
+            cargarAsientosDesdeArchivo();
+            System.out.println(" ");
+            System.out.println("Aun hay asientos disponible, aprovecha!!");
+        }
+
+
     }
 
     private void cargarAsientosDesdeArchivo() {
         try (BufferedReader reader = new BufferedReader(new FileReader("asientos_ocupados.txt"))) {
             String asiento;
             while ((asiento = reader.readLine()) != null) {
-                marcarAsientoOcupado(asiento.trim()); // Eliminar espacios antes y después
+                marcarAsientoOcupado(asiento.trim());
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error al leer el archivo de asientos ocupados.");
         }
     }
 
     private void liberarAsientos() {
-        // Verificar si es viernes a las 6 p.m. para liberar los asientos
         if (fechaestreno.viernesfinal()) {
             try {
-                // Borrar el archivo que contiene los asientos ocupados
                 Files.deleteIfExists(Paths.get("asientos_ocupados.txt"));
                 System.out.println("Se han liberado todos los asientos.");
-
-                // Reiniciar la matriz de asientos a su estado original
-                for (int fila = 0; fila < FILAS; fila++) {
-                    char letra = (char) ('A' + fila);
-                    for (int columna = 0; columna < COLUMNAS; columna++) {
-                        asientos[fila][columna] = letra + String.valueOf(columna + 1);
+                for (int fila = 0; fila < letras.length; fila++) {
+                    for (int columna = 0; columna < numeros.length; columna++) {
+                        asientos[fila][columna] = letras[fila] + numeros[columna];
                     }
                 }
-                libres = FILAS * COLUMNAS;  // Restaurar asientos libres
-                ocupados = 0;  // Restablecer asientos ocupados
-            } catch (IOException e) {
+                libres = FILAS * COLUMNAS;
+                ocupados = 0;
+            } catch (Exception e) {
                 System.out.println("Error al liberar los asientos.");
             }
         } else {
-            // Si no es viernes a las 6 p.m., no se realiza ninguna acción
-            System.out.println("No es viernes a las 6 p.m. No se liberan los asientos.");
+            System.out.println("Aun se puede entrar a la funcion");
         }
     }
+
 
 
     private void marcarAsientoOcupado(String asiento) {
@@ -102,7 +108,7 @@ public class Sala {
         for (int i = 0; i < cantidadBoletos; i++) {
             mostrarEstadoAsientos();
             System.out.print("Selecciona el asiento " + (i + 1) + " (ejemplo: A1): ");
-            String asiento = scanner.next().toUpperCase();
+            String asiento = scanner.next();
 
             boolean encontrado = false;
             for (int fila = 0; fila < FILAS; fila++) {
@@ -135,10 +141,8 @@ public class Sala {
         System.out.println("Formato: " + pelicula.getFormato());
         System.out.println("Género: " + pelicula.getGenero());
         System.out.println("Duración: " + pelicula.getDuracion() + " minutos");
-        System.out.println("Día: " + pelicula.getDia());
-
-        System.out.println("\nEstado de los asientos ( X = ocupado, [A1] = disponible):");
-        System.out.println(" \n");
+        System.out.println(fechaestreno.viernesqueviene());
+        System.out.println("\nEstado de los asientos ( X = ocupado, [A1,A2...] = disponible):");
 
         for (int fila = 0; fila < FILAS; fila++) {
             for (int columna = 0; columna < COLUMNAS; columna++) {
@@ -157,7 +161,7 @@ public class Sala {
     }
 
     public void mostrarDisponibilidad() {
-        System.out.println("\nResumen de disponibilidad:");
+        System.out.println(" ");
         System.out.println("Asientos disponibles: " + libres);
         System.out.println("Asientos ocupados: " + ocupados);
     }
@@ -165,7 +169,7 @@ public class Sala {
     private void guardarAsientosEnArchivo(String asiento) {
         try (FileWriter writer = new FileWriter("asientos_ocupados.txt", true)) {
             writer.write(asiento + "\n");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error al guardar los asientos en el archivo.");
         }
     }
@@ -173,13 +177,13 @@ public class Sala {
         try (FileWriter writer = new FileWriter("asientosreservas.txt", true)) {
             writer.write("Asiento: " + asiento + " | Apellido: " + user.getApellido() +
                     " | Nombre: " + user.getNombre() + " | Cédula: " + user.getCedula() + "\n");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error al guardar los asientos en el archivo.");
         }
     }
 
     public static void main(String[] args) {
-        Peliculas pelicula = new Peliculas("Inception", "2D", "Ciencia Ficción", 148, "09/01/2025");
+        Peliculas pelicula = new Peliculas("Inception", "2D", "Ciencia Ficción", 148);
         User user1 = new User("Vasquez", "Luis", "100021202");
         Sala sala = new Sala(pelicula);
         sala.mostrarEstadoAsientos();

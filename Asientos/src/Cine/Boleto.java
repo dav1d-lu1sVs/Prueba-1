@@ -35,7 +35,7 @@ public class Boleto {
     public static void main(String[] args) {
 
         Peliculas pelicula = new Peliculas("Inception", "2D", "Ciencia Ficción", 148);
-        User user1 = new User("Vasquez", "Luis", "100021202");
+        User user1 = new User();
         Sala sala = new Sala(pelicula);
         sala.comprarBoletos(user1);
         Boleto boleto = new Boleto("A1", user1, pelicula);

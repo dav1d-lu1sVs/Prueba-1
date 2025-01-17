@@ -8,16 +8,21 @@ import java.util.Scanner;
 import java.io.FileWriter;
 
 public class Sala {
-    private final int FILAS = 4;
-    private final int COLUMNAS = 4;
+    private int FILAS = 4;
+    private int COLUMNAS = 4;
     private String[][] asientos;
     private Peliculas pelicula;
     private User user;
+    private int cantidadBoletos;
     private FechaEstreno fechaestreno;
     private int libres;
     private int ocupados;
     char[] letras = {'A', 'B', 'C', 'D'};
     String[] numeros = {"1", "2", "3", "4"};
+
+    public int getCantidadBoletos() {
+        return cantidadBoletos;
+    }
 
     public Sala(Peliculas pelicula) {
         this.asientos = new String[FILAS][COLUMNAS];
@@ -98,7 +103,7 @@ public class Sala {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("¿Cuántos boletos deseas comprar? ");
-        int cantidadBoletos = scanner.nextInt();
+        cantidadBoletos = scanner.nextInt();
 
         if (cantidadBoletos > libres) {
             System.out.println("No hay suficientes asientos disponibles. Intenta nuevamente.");
@@ -182,12 +187,4 @@ public class Sala {
         }
     }
 
-    public static void main(String[] args) {
-        Peliculas pelicula = new Peliculas("Inception", "2D", "Ciencia Ficción", 148);
-        User user1 = new User("Vasquez", "Luis", "100021202");
-        Sala sala = new Sala(pelicula);
-        sala.mostrarEstadoAsientos();
-        sala.comprarBoletos(user1);
-        sala.mostrarEstadoAsientos();
-    }
 }
